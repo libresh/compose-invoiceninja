@@ -1,0 +1,58 @@
+version: "2"
+networks:
+  lb_web:
+    external: true
+  back:
+    driver: bridge
+
+services:
+  db:
+    image: mysql
+    volumes:
+    - ./mysql/runtime:/var/lib/mysql
+    env_file:
+    - ./env
+    networks:
+    - back
+
+  app:
+    image: invoiceninja/invoiceninja
+    links:
+    - db:mysql
+    volumes:
+    - ./data:/var/www/app/storage
+    env_file:
+    - ./env
+    networks:
+    - back
+
+  web:
+    image: nginx
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    links:
+    - app
+    volumes_from:
+    - app
+    networks:
+    - back
+    - lb_web
+
+  cron:
+    image: invoiceninja/invoiceninja
+    env_file:
+    - ./env
+    links:
+    - db:mysql
+    user: www-data
+    entrypoint: |
+      bash -c 'bash -s <<EOF
+      trap "break;exit" SIGHUP SIGINT SIGTERM
+      while /bin/true; do
+        sleep 300s
+        /usr/local/bin/php /var/www/app/artisan ninja:send-invoices
+        /usr/local/bin/php /var/www/app/artisan ninja:send-reminders
+      done
+      EOF'
+    networks:
+    - back

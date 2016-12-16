@@ -1,0 +1,14 @@
+#!/bin/bash -eux
+
+MYSQL_ROOT_PASSWORD=`tr -dc A-Za-z0-9_ < /dev/urandom | head -c 20 | xargs`
+
+echo "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}" > env
+echo "MYSQL_DATABASE=ninja" >> env
+echo "DB_USERNAME=root" >> env
+echo "DB_PASSWORD=${MYSQL_ROOT_PASSWORD}" >> env
+echo "MAIL_DRIVER=smtp" >> env
+echo "MAIL_PASSWORD=${MAIL_PASS}" >> env
+echo "MAIL_USERNAME=${MAIL_USER}" >> env
+echo "MAIL_HOST=${MAIL_HOST}" >> env
+echo "MAIL_PORT=${MAIL_PORT}" >> env
+echo "MAIL_ENCRYPTION=tls" >> env
