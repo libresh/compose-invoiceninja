@@ -37,6 +37,8 @@ services:
     networks:
     - back
     - lb_web
+    environment:
+    - VIRTUAL_HOST
 
   cron:
     image: invoiceninja/invoiceninja
