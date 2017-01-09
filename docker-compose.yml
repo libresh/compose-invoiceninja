@@ -21,6 +21,7 @@ services:
     - db:mysql
     volumes:
     - ./data:/var/www/app/storage
+    - ./logo:/var/www/app/public/logo
     env_file:
     - ./env
     networks:
