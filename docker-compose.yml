@@ -23,6 +23,9 @@ services:
     volumes:
     - ./data:/var/www/app/storage
     - ./logo:/var/www/app/public/logo
+    environment:
+    - REDIS_HOST=redis
+    - CACHE_DRIVER=redis
     env_file:
     - ./env
     networks:
@@ -49,6 +52,11 @@ services:
     - lb_web
     environment:
     - VIRTUAL_HOST
+
+  redis:
+    image: redis:alpine
+    networks:
+    - back
 
   cron:
     image: invoiceninja/invoiceninja
